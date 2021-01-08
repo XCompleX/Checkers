@@ -13,8 +13,9 @@ namespace Checkers {
 
         bool click = false;
         bool needEat = false;
-
-        int player;
+        bool player = true;
+        
+        int course;
         int position;
         int comboEatCell = -1;
 
@@ -79,8 +80,8 @@ namespace Checkers {
                     if (mouse.X < possibleMoves[i, j, 0] + sizeX / 2 && mouse.Y < possibleMoves[i, j, 1] + sizeY / 2 &&
                         mouse.X > possibleMoves[i, j, 0] - sizeX / 2 && mouse.Y > possibleMoves[i, j, 1] - sizeY / 2) {
 
-                        if ((int)possibleMoves[i, j, 2] < 4 || (int)possibleMoves[i, j, 2] > 27)
-                            checkersMap[(int)possibleMoves[i, j, 2]] = player + 2;
+                        if ((int)possibleMoves[i, j, 2] < 4 && player || (int)possibleMoves[i, j, 2] > 27 && !player)
+                            checkersMap[(int)possibleMoves[i, j, 2]] = course + 2;
                         else
                             checkersMap[(int)possibleMoves[i, j, 2]] = checkersMap[position];
 
@@ -95,7 +96,8 @@ namespace Checkers {
                         if (needEat)
                             break;
                         comboEatCell = -1;
-                        player += player % 2 == 0 ? 1 : -1;
+                        course += course % 2 == 0 ? 1 : -1;
+                        player = !player;
                         checkMapOnPossibleMoves();
                         return;
                     }
@@ -111,14 +113,14 @@ namespace Checkers {
                     if (mouse.X < X + sizeX / 2 && mouse.Y < Y + sizeY / 2 &&
                         mouse.X > X - sizeX / 2 && mouse.Y > Y - sizeY / 2) {
                         position = (v % 2 == 0 ? h : h + 4) + 8 * (v - v % 2) / 2;
-                        if (checkersMap[position] == player) {
+                        if (checkersMap[position] == course) {
                             e.Graphics.DrawImage(allocation, X - sizeX / 2, Y - sizeY / 2, sizeX, sizeY);
                             for (int i = 0; i < (needEat ? 4 : 2); i++) {
                                 int Xdiag = (v % 2 == 0 ? h : h + 4), Ydiag = v, diagPos = 0;
                                 cellCalculation(i, ref Xdiag, ref Ydiag, ref diagPos, false);
                                 if (needEat) {
                                     if (Xdiag >= 0 && Xdiag < 8 && (comboEatCell == -1 || comboEatCell == position) &&
-                                        Ydiag >= 0 && Ydiag < 8 && (checkersMap[diagPos] % 2) != player && checkersMap[diagPos] != -1) {
+                                        Ydiag >= 0 && Ydiag < 8 && (checkersMap[diagPos] % 2) != course && checkersMap[diagPos] != -1) {
                                         possibleMoves[i, 0, 3] = diagPos;
                                         cellCalculation(i, ref Xdiag, ref Ydiag, ref diagPos, false);
                                         showPossibleMoves(i, 0, Xdiag, Ydiag, diagPos, allocation, e);
@@ -128,7 +130,7 @@ namespace Checkers {
                                     showPossibleMoves(i, 0, Xdiag, Ydiag, diagPos, allocation, e);
                             }
                         }
-                        else if (checkersMap[position] == player + 2) {
+                        else if (checkersMap[position] == course + 2) {
                             bool check = false;
                             e.Graphics.DrawImage(allocation, X - sizeX / 2, Y - sizeY / 2, sizeX, sizeY);
                             for (int i = 0; i < 4; i++) {
@@ -137,7 +139,7 @@ namespace Checkers {
                                     for (int j = 0; ; j++) {
                                         cellCalculation(i, ref Xdiag, ref Ydiag, ref diagPos, false);
                                         if ((Xdiag >= 0 && Xdiag < 8 && (comboEatCell == -1 || comboEatCell == position) &&
-                                            Ydiag >= 0 && Ydiag < 8 && checkersMap[diagPos] != -1)) {
+                                            Ydiag >= 0 && Ydiag < 8 && (checkersMap[diagPos] % 2) != course && checkersMap[diagPos] != -1)) {
                                             check = true;
                                             break;
                                         }
@@ -162,8 +164,8 @@ namespace Checkers {
             }
         }
         void cellCalculation(int number, ref int Xdiag, ref int Ydiag, ref int diagPos, bool search) {
-            Xdiag = number < (needEat || (checkersMap[position] == player + 2 || search) ? 2 : 1) ? (Ydiag % 2 == 0 ? Xdiag + 4 : Xdiag - 5) : (Ydiag % 2 == 0 ? Xdiag + 5 : Xdiag - 4);
-            Ydiag = Ydiag + ((needEat || checkersMap[position] == player + 2 || search ? number : player) % 2 == 0 ? 1 : -1);
+            Xdiag = number < (needEat || (checkersMap[position] == course + 2 || search) ? 2 : 1) ? (Ydiag % 2 == 0 ? Xdiag + 4 : Xdiag - 5) : (Ydiag % 2 == 0 ? Xdiag + 5 : Xdiag - 4);
+            Ydiag = Ydiag + ((needEat || checkersMap[position] == course + 2 || search ? number : course) % 2 == 0 ? 1 : -1);
             diagPos = Xdiag + Ydiag / 2 * 8;
         }
         bool showPossibleMoves(int number, int cell, int Xdiag, int Ydiag, int diagPos, Image allocation, PaintEventArgs e) {
@@ -203,8 +205,9 @@ namespace Checkers {
 
                                     cellCalculation(x, ref X, ref Y, ref D, true);
                                     if (X >= 0 && X < 8 && Y >= 0 && Y <= 8 && D >= 0 && D < 32 &&
-                                        checkersMap[D] % 2 == player) {
+                                        checkersMap[D] % 2 == course) {
                                         possibleMovesEatMap[D, 0] = 1;
+                                        //TODO
                                     }
                                 }
                                 check = true;
@@ -213,7 +216,7 @@ namespace Checkers {
                                 break;
                             if (checkersMap[diagPos] != -1) {
                                 if ((z == 0 || (checkersMap[diagPos] - 2 >= 0)) && (comboEatCell == -1 || comboEatCell == diagPos) &&
-                                    ((checkersMap[fdiagPos] % 2) != player && (checkersMap[fdiagPos] % 2) != (checkersMap[diagPos] % 2) &&
+                                    ((checkersMap[fdiagPos] % 2) != course && (checkersMap[fdiagPos] % 2) != (checkersMap[diagPos] % 2) &&
                                     checkersMap[fdiagPos] != -1) && checkersMap[fdiagPos + backCell[k] + (fYdiag % 2 == 0 ? 1 : 0)] == -1) {
                                     needEat = true;
                                     possibleMovesEatMap[diagPos, 1] = 1;
@@ -259,7 +262,7 @@ namespace Checkers {
                 Properties.Resources.whiteQueen
             };
 
-            player = 1;
+            course = Convert.ToInt32(player);
         }
         void ResizeMap() {
             dy = pictureBox1.Height;
