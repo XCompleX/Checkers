@@ -81,9 +81,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\black.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\kombinacii-v-shashkax9.jpg" />
   </ItemGroup>
   <ItemGroup>
@@ -100,6 +97,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\red.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\black.png" />
+    <None Include="Resources\green.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

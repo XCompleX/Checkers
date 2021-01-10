@@ -59,7 +59,7 @@ namespace Checkers {
                         e.Graphics.DrawImage(checker, X, Y, sizeX, sizeY);
                     }
                     if (possibleMovesEatMap[h + v * 4, Convert.ToInt32(needEat)] == 1) {
-                        Image checker = Properties.Resources.red;
+                        Image checker = needEat ? Properties.Resources.red : Properties.Resources.green;
                         e.Graphics.DrawImage(checker, X, Y, sizeX, sizeY);
                     }
                 }
@@ -200,7 +200,7 @@ namespace Checkers {
                             if (Xdiag < 0 || Xdiag > 7 || Ydiag < 0 || Ydiag > 7)
                                 break;
                             if (checkersMap[diagPos] == -1 && !check) {
-                                for (int x = 0; x < 4; x++) {
+                                for (int x = course % 2 == 1 ? 0 : 1; x < 4; x += 2) {
                                     int X = Xdiag, Y = Ydiag, D = diagPos;
 
                                     cellCalculation(x, ref X, ref Y, ref D, true);
@@ -268,18 +268,18 @@ namespace Checkers {
             dy = pictureBox1.Height;
             dx = pictureBox1.Width;
 
-            sizeX = dx / 11f;
-            sizeY = dy / 11f;
+            sizeX = dx / 9f;
+            sizeY = dy / 9.2f;
 
             mapCoordinate = new float[8, 2] { 
-                { dx / 4.55f , dy / 9.0f   },
-                { dx / 2.27f , dy / 4.4f   },
-                { dx / 1.51f , dy / 2.98f  },
-                { dx / 1.13f , dy / 2.26f  },
-                { dx / 9.1f  , dy / 1.8f   },
-                { dx / 3.025f, dy / 1.51f  },
-                { dx / 1.805f, dy / 1.295f },
-                { dx / 1.295f, dy / 1.13f  }
+                { dx / 9.0f * 2.0f, dy / 9.0f   },
+                { dx / 9.0f * 4.0f, dy / 9.0f * 2.0f },
+                { dx / 9.0f * 6.0f, dy / 9.0f * 3.0f },
+                { dx / 9.0f * 8.0f, dy / 9.0f * 4.0f },
+                { dx / 9.0f,        dy / 9.0f * 5.0f },
+                { dx / 9.0f * 3.0f, dy / 9.0f * 6.0f },
+                { dx / 9.0f * 5.0f, dy / 9.0f * 7.0f },
+                { dx / 9.0f * 7.0f, dy / 9.0f * 8.0f }
             };
             MaximumSize = new Size(Height-25, 1000);
             MinimumSize = new Size(Height-25, 300);
