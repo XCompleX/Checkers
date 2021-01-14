@@ -11,6 +11,8 @@ using System.Windows.Forms;
 namespace Checkers {
     public partial class Form1 : Form {
 
+        public HeadMenu hm;
+
         bool click = false;
         bool needEat = false;
         bool player = true;
@@ -34,7 +36,7 @@ namespace Checkers {
 
         public Form1() {
             InitializeComponent();
-
+            StartPosition = FormStartPosition.CenterScreen;
             init();
             checkMapOnPossibleMoves();
         }
@@ -69,6 +71,10 @@ namespace Checkers {
                 ClickOnChecker(e);
                 click = false;
             }
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
+            hm.Show();
         }
 
         void ClickOnChecker(PaintEventArgs e) {
@@ -230,6 +236,7 @@ namespace Checkers {
                 }
             }
         }
+
         void init() {
             ResizeMap();
 
