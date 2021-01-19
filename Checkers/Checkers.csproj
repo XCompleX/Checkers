@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -44,6 +45,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Form1.cs">
@@ -108,8 +110,13 @@
     <None Include="Resources\red.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\eat.wav" />
     <Content Include="Resources\123.ico" />
     <Content Include="Resources\black.png" />
+    <Content Include="Resources\click.wav" />
+    <Content Include="Resources\hover.wav" />
+    <Content Include="Resources\move.wav" />
+    <Content Include="Resources\start.wav" />
     <None Include="Resources\button.png" />
     <None Include="Resources\button_hover.png" />
     <Content Include="Resources\checkers_6174.png" />

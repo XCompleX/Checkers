@@ -39,10 +39,6 @@ namespace Checkers
             // 
             // pvp_b
             // 
-            this.pvp_b.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.pvp_b.AutoSize = true;
             this.pvp_b.BackColor = System.Drawing.Color.Transparent;
             this.pvp_b.BackgroundImage = global::Checkers.Properties.Resources.button;
             this.pvp_b.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -53,10 +49,10 @@ namespace Checkers
             this.pvp_b.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.pvp_b.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.pvp_b.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.pvp_b.Location = new System.Drawing.Point(212, 143);
+            this.pvp_b.Location = new System.Drawing.Point(167, 142);
             this.pvp_b.Name = "pvp_b";
             this.pvp_b.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.pvp_b.Size = new System.Drawing.Size(231, 66);
+            this.pvp_b.Size = new System.Drawing.Size(210, 59);
             this.pvp_b.TabIndex = 6;
             this.pvp_b.Text = "Player vs Player";
             this.pvp_b.UseVisualStyleBackColor = false;
@@ -70,19 +66,14 @@ namespace Checkers
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox1.BackgroundImage = global::Checkers.Properties.Resources.image;
             this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Location = new System.Drawing.Point(63, 12);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(664, 119);
+            this.pictureBox1.Size = new System.Drawing.Size(411, 97);
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
             // 
             // Exit_b
             // 
-            this.Exit_b.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Exit_b.AutoSize = true;
             this.Exit_b.BackColor = System.Drawing.Color.Transparent;
             this.Exit_b.BackgroundImage = global::Checkers.Properties.Resources.button;
             this.Exit_b.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
@@ -93,10 +84,10 @@ namespace Checkers
             this.Exit_b.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.Exit_b.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.Exit_b.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
-            this.Exit_b.Location = new System.Drawing.Point(212, 405);
+            this.Exit_b.Location = new System.Drawing.Point(167, 365);
             this.Exit_b.Name = "Exit_b";
             this.Exit_b.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.Exit_b.Size = new System.Drawing.Size(231, 66);
+            this.Exit_b.Size = new System.Drawing.Size(210, 59);
             this.Exit_b.TabIndex = 10;
             this.Exit_b.Text = "Exit";
             this.Exit_b.UseVisualStyleBackColor = false;
@@ -111,7 +102,7 @@ namespace Checkers
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImage = global::Checkers.Properties.Resources.checkers_6174;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.ClientSize = new System.Drawing.Size(664, 528);
+            this.ClientSize = new System.Drawing.Size(539, 500);
             this.Controls.Add(this.Exit_b);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.pvp_b);
@@ -120,7 +111,6 @@ namespace Checkers
             this.Text = "Checkers";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

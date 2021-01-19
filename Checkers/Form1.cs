@@ -7,11 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Media;
+using System.Windows.Media;
+using System.IO;
+using System.Threading;
 
 namespace Checkers {
     public partial class Form1 : Form {
 
         public HeadMenu hm;
+
+        Point mouse;
+
+        Image[] checkersForm;
 
         bool click = false;
         bool needEat = false;
@@ -30,9 +38,7 @@ namespace Checkers {
         float[,] mapCoordinate;
         float[,,] possibleMoves = new float[4, 7, 4];
 
-        Point mouse;
-
-        Image[] checkersForm;
+        string resourcePath = Path.GetFullPath(Directory.GetCurrentDirectory() + @"\..\..\Resources\");
 
         public Form1() {
             InitializeComponent();
@@ -75,6 +81,7 @@ namespace Checkers {
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
             hm.Show();
+            soundPlay("click.wav");
         }
 
         void ClickOnChecker(PaintEventArgs e) {
@@ -86,13 +93,20 @@ namespace Checkers {
                     if (mouse.X < possibleMoves[i, j, 0] + sizeX / 2 && mouse.Y < possibleMoves[i, j, 1] + sizeY / 2 &&
                         mouse.X > possibleMoves[i, j, 0] - sizeX / 2 && mouse.Y > possibleMoves[i, j, 1] - sizeY / 2) {
 
-                        if ((int)possibleMoves[i, j, 2] < 4 && player || (int)possibleMoves[i, j, 2] > 27 && !player)
+                        if ((int)possibleMoves[i, j, 2] < 4 && player || (int)possibleMoves[i, j, 2] > 27 && !player) {
                             checkersMap[(int)possibleMoves[i, j, 2]] = course + 2;
-                        else
+                            soundPlay("move.wav");
+                        }
+                        else {
                             checkersMap[(int)possibleMoves[i, j, 2]] = checkersMap[position];
+                            soundPlay("move.wav");
+                        }
 
                         checkersMap[position] = -1;
                         if (needEat) {
+                            Thread newThread = new Thread(soundPlay);
+                            newThread.Start("eat.wav");
+
                             checkersMap[(int)possibleMoves[i, 0, 3]] = -1;
                             comboEatCell = (int)possibleMoves[i, j, 2];
                             checkMapOnPossibleMoves();
@@ -235,6 +249,16 @@ namespace Checkers {
                     }
                 }
             }
+
+            int courseCount = 0;
+            for (int i = 0; i < 2; i++)
+                for (int j = 0; j < 32; j++)
+                    if(possibleMovesEatMap[j, i] != 0) courseCount++;
+            if(courseCount == 0 && course == 0)
+                Console.WriteLine("Победили Белые!");
+            else if(courseCount == 0 && course == 1)
+                Console.WriteLine("Победили Черные!");
+
         }
 
         void init() {
@@ -290,6 +314,13 @@ namespace Checkers {
             };
             MaximumSize = new Size(Height-25, 1000);
             MinimumSize = new Size(Height-25, 300);
+        }
+
+        void soundPlay(object pesnya)
+        {
+            MediaPlayer mplayer = new MediaPlayer();
+            mplayer.Open(new Uri(resourcePath + pesnya.ToString(), UriKind.Relative));
+            mplayer.Play();
         }
     }
 }
