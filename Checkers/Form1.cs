@@ -108,13 +108,11 @@ namespace Checkers {
                         sY = mapCoordinate[position / 4, 1];
                         fX = mapCoordinate[(int)possibleMoves[i, j, 2] % 8, 0];
                         fY = mapCoordinate[(int)possibleMoves[i, j, 2] / 4, 1];
-
+                       
+                        soundPlay("move.wav");
                         timer1.Enabled = true;
 
-                        while (timer1.Enabled)
-                        {
-                            await Task.Delay(10);
-                        }
+                        while (timer1.Enabled) await Task.Delay(10);
 
                         if ((int)possibleMoves[i, j, 2] < 4 && player || (int)possibleMoves[i, j, 2] > 27 && !player) {
                             checkersMap[(int)possibleMoves[i, j, 2]] = course + 2;
@@ -350,7 +348,7 @@ namespace Checkers {
             sY -= (float)dy;
 
             if (Math.Abs(x) < 1) {
-                soundPlay("move.wav");
+                
                 timer1.Enabled = false;
             }
 
