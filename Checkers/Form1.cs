@@ -28,6 +28,9 @@ namespace Checkers {
         int course;
         int position;
         int comboEatCell = -1;
+        int Checker;
+
+        float sX, sY, fX, fY;
 
         float dx, dy;
         float sizeX, sizeY;
@@ -45,6 +48,7 @@ namespace Checkers {
             StartPosition = FormStartPosition.CenterScreen;
             init();
             checkMapOnPossibleMoves();
+            timer1.Tick += new EventHandler(moveAnimation);
         }
 
         private void pictureBox1_Click(object sender, EventArgs e) {
@@ -77,6 +81,11 @@ namespace Checkers {
                 ClickOnChecker(e);
                 click = false;
             }
+
+            if (timer1.Enabled) {
+                Image checker = checkersForm[Checker];
+                e.Graphics.DrawImage(checker, (int)(sX - sizeX / 2), (int)(sY - sizeY / 2), sizeX, sizeY);
+            }
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e) {
@@ -84,7 +93,7 @@ namespace Checkers {
             soundPlay("click.wav");
         }
 
-        void ClickOnChecker(PaintEventArgs e) {
+        async void ClickOnChecker(PaintEventArgs e) {
             Image allocation = Properties.Resources.yellow;
             mouse = PointToClient(Cursor.Position);
 
@@ -93,16 +102,27 @@ namespace Checkers {
                     if (mouse.X < possibleMoves[i, j, 0] + sizeX / 2 && mouse.Y < possibleMoves[i, j, 1] + sizeY / 2 &&
                         mouse.X > possibleMoves[i, j, 0] - sizeX / 2 && mouse.Y > possibleMoves[i, j, 1] - sizeY / 2) {
 
-                        if ((int)possibleMoves[i, j, 2] < 4 && player || (int)possibleMoves[i, j, 2] > 27 && !player) {
-                            checkersMap[(int)possibleMoves[i, j, 2]] = course + 2;
-                            soundPlay("move.wav");
-                        }
-                        else {
-                            checkersMap[(int)possibleMoves[i, j, 2]] = checkersMap[position];
-                            soundPlay("move.wav");
+                        Checker = checkersMap[position];
+                        checkersMap[position] = -1;
+                        sX = mapCoordinate[position % 8, 0];
+                        sY = mapCoordinate[position / 4, 1];
+                        fX = mapCoordinate[(int)possibleMoves[i, j, 2] % 8, 0];
+                        fY = mapCoordinate[(int)possibleMoves[i, j, 2] / 4, 1];
+
+                        timer1.Enabled = true;
+
+                        while (timer1.Enabled)
+                        {
+                            await Task.Delay(10);
                         }
 
-                        checkersMap[position] = -1;
+                        if ((int)possibleMoves[i, j, 2] < 4 && player || (int)possibleMoves[i, j, 2] > 27 && !player) {
+                            checkersMap[(int)possibleMoves[i, j, 2]] = course + 2;
+                        }
+                        else {
+                            checkersMap[(int)possibleMoves[i, j, 2]] = Checker;
+                        }
+
                         if (needEat) {
                             Thread newThread = new Thread(soundPlay);
                             newThread.Start("eat.wav");
@@ -227,7 +247,6 @@ namespace Checkers {
                                     if (X >= 0 && X < 8 && Y >= 0 && Y <= 8 && D >= 0 && D < 32 &&
                                         checkersMap[D] % 2 == course) {
                                         possibleMovesEatMap[D, 0] = 1;
-                                        //TODO
                                     }
                                 }
                                 check = true;
@@ -316,11 +335,26 @@ namespace Checkers {
             MinimumSize = new Size(Height-25, 300);
         }
 
-        void soundPlay(object pesnya)
-        {
+        void soundPlay(object pesnya) {
             MediaPlayer mplayer = new MediaPlayer();
             mplayer.Open(new Uri(resourcePath + pesnya.ToString(), UriKind.Relative));
             mplayer.Play();
+        }
+
+        private void moveAnimation(object sender, EventArgs e) {
+            var (x, y) = (sX - fX, sY - fY);
+            double k = Math.Sqrt(x * x + y * y);
+            double r = k / 6;
+            var (dx, dy) = (r * x / k, r * y / k);
+            sX -= (float)dx;
+            sY -= (float)dy;
+
+            if (Math.Abs(x) < 1) {
+                soundPlay("move.wav");
+                timer1.Enabled = false;
+            }
+
+            pictureBox1.Invalidate();
         }
     }
 }
