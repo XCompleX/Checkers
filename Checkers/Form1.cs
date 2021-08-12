@@ -45,6 +45,9 @@ namespace Checkers {
 
         string winer = "";
 
+        bool inReset = false;
+        bool inExit = false;
+
         public Form1() {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
@@ -55,8 +58,7 @@ namespace Checkers {
 
         private void pictureBox1_Click(object sender, EventArgs e) {
             if (winer.Length > 0) {
-                if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 2.2) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 2.2))
-                {
+                if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 2.2) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 2.2)) {
                     winer = "";
                     possibleMoves = new float[4, 7, 4];
                     bool click = false;
@@ -66,9 +68,10 @@ namespace Checkers {
                     init();
                     checkMapOnPossibleMoves();
                     pictureBox1.Invalidate();
+                    Thread newThread = new Thread(soundPlay);
+                    newThread.Start("click.wav");
                 }
-                if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 1.5) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 1.5))
-                {
+                if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 1.5) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 1.5)) {
                     Close();
                 }
             }
@@ -125,15 +128,35 @@ namespace Checkers {
 
                 if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 2.2) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 2.2)) {
                     e.Graphics.DrawImage(Properties.Resources.button_hover, dx / 4, (int)(dy / 2.2), (int)(dx / 2), dx / 8);
+                    if (!inReset) {
+                        Thread newThread = new Thread(soundPlay);
+                        newThread.Start("hover.wav");
+                        inReset = true;
+                    }
                 }
                 else {
                     e.Graphics.DrawImage(Properties.Resources.button, dx / 4, (int)(dy / 2.2), (int)(dx / 2), dx / 8);
+                    if (inReset) {
+                        Thread newThread = new Thread(soundPlay);
+                        newThread.Start("hover.wav");
+                        inReset = false;
+                    }
                 }
                 if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 1.5) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 1.5)) {
                     e.Graphics.DrawImage(Properties.Resources.button_hover, dx / 4, (int)(dy / 1.5), (int)(dx / 2), dx / 8);
+                    if (!inExit) {
+                        Thread newThread = new Thread(soundPlay);
+                        newThread.Start("hover.wav");
+                        inExit = true;
+                    }
                 }
                 else {
                     e.Graphics.DrawImage(Properties.Resources.button, dx / 4, (int)(dy / 1.5), (int)(dx / 2), dx / 8);
+                    if (inExit) {
+                        Thread newThread = new Thread(soundPlay);
+                        newThread.Start("hover.wav");
+                        inExit = false;
+                    }
                 }
 
                 e.Graphics.DrawString("Еще раз", new Font("Arial", dx / 32), brushOrange, dx / 2, (int)(dy / 1.95), sf);
