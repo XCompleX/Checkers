@@ -43,6 +43,8 @@ namespace Checkers {
 
         string resourcePath = Path.GetFullPath(Directory.GetCurrentDirectory() + @"\..\..\Resources\");
 
+        string winer = "";
+
         public Form1() {
             InitializeComponent();
             StartPosition = FormStartPosition.CenterScreen;
@@ -52,8 +54,28 @@ namespace Checkers {
         }
 
         private void pictureBox1_Click(object sender, EventArgs e) {
-            click = true;
-            pictureBox1.Invalidate();
+            if (winer.Length > 0) {
+                if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 2.2) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 2.2))
+                {
+                    winer = "";
+                    possibleMoves = new float[4, 7, 4];
+                    bool click = false;
+                    bool needEat = false;
+                    bool player = true;
+                    int comboEatCell = -1;
+                    init();
+                    checkMapOnPossibleMoves();
+                    pictureBox1.Invalidate();
+                }
+                if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 1.5) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 1.5))
+                {
+                    Close();
+                }
+            }
+            else {
+                click = true;
+                pictureBox1.Invalidate();
+            }
         }
 
         private void pictureBox1_Resize(object sender, EventArgs e) {
@@ -85,6 +107,37 @@ namespace Checkers {
             if (timer1.Enabled) {
                 Image checker = checkersForm[Checker];
                 e.Graphics.DrawImage(checker, (int)(sX - sizeX / 2), (int)(sY - sizeY / 2), sizeX, sizeY);
+            }
+            if (winer.Length != 0) {
+                System.Drawing.Brush brushWhite = new SolidBrush(System.Drawing.Color.FromArgb(220, 236, 206, 168));
+                System.Drawing.Brush brushOrange = new SolidBrush(System.Drawing.Color.FromArgb(220, 255, 128, 0));
+                System.Drawing.Brush brushBlack = new SolidBrush(System.Drawing.Color.Black);
+                System.Drawing.Pen pen = new System.Drawing.Pen(brushBlack);
+
+                StringFormat sf = new StringFormat();
+                sf.LineAlignment = StringAlignment.Center;
+                sf.Alignment = StringAlignment.Center;
+
+                e.Graphics.FillRectangle(brushWhite, dx / 6, dy / 6, (int)(dx / 1.5), (int)(dy / 1.5));
+                e.Graphics.DrawRectangle(pen, dx / 6, dy / 6, (int)(dx / 1.5), (int)(dy / 1.5));
+                e.Graphics.DrawString(winer, new Font("Arial", dx / 32), brushBlack, dx / 2, (int)(dx / 3.2), sf);
+                mouse = PointToClient(Cursor.Position);
+
+                if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 2.2) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 2.2)) {
+                    e.Graphics.DrawImage(Properties.Resources.button_hover, dx / 4, (int)(dy / 2.2), (int)(dx / 2), dx / 8);
+                }
+                else {
+                    e.Graphics.DrawImage(Properties.Resources.button, dx / 4, (int)(dy / 2.2), (int)(dx / 2), dx / 8);
+                }
+                if (mouse.X < (dx / 4 + dx / 2) && mouse.Y < (int)(dy / 1.5) + dx / 8 && mouse.X > dx / 4 && mouse.Y > (int)(dy / 1.5)) {
+                    e.Graphics.DrawImage(Properties.Resources.button_hover, dx / 4, (int)(dy / 1.5), (int)(dx / 2), dx / 8);
+                }
+                else {
+                    e.Graphics.DrawImage(Properties.Resources.button, dx / 4, (int)(dy / 1.5), (int)(dx / 2), dx / 8);
+                }
+
+                e.Graphics.DrawString("Еще раз", new Font("Arial", dx / 32), brushOrange, dx / 2, (int)(dy / 1.95), sf);
+                e.Graphics.DrawString("В меню", new Font("Arial", dx / 32), brushOrange, dx / 2, (int)(dy / 1.38), sf);
             }
         }
 
@@ -217,6 +270,13 @@ namespace Checkers {
             }
             return false;
         }
+
+        private void pictureBox1_MouseMove(object sender, MouseEventArgs e)
+        {   
+            if(winer.Length > 0)
+                pictureBox1.Invalidate();
+        }
+
         void checkMapOnPossibleMoves() {
             needEat = false;
             int[] backCell = new int[4] { -4, 4, -5, 3 };
@@ -272,9 +332,9 @@ namespace Checkers {
                 for (int j = 0; j < 32; j++)
                     if(possibleMovesEatMap[j, i] != 0) courseCount++;
             if(courseCount == 0 && course == 0)
-                Console.WriteLine("Победили Белые!");
+                winer = "Победили Белые!";
             else if(courseCount == 0 && course == 1)
-                Console.WriteLine("Победили Черные!");
+                winer = "Победили Черные!";
 
         }
 
@@ -332,13 +392,11 @@ namespace Checkers {
             MaximumSize = new Size(Height-25, 1000);
             MinimumSize = new Size(Height-25, 300);
         }
-
         void soundPlay(object pesnya) {
             MediaPlayer mplayer = new MediaPlayer();
             mplayer.Open(new Uri(resourcePath + pesnya.ToString(), UriKind.Relative));
             mplayer.Play();
         }
-
         private void moveAnimation(object sender, EventArgs e) {
             var (x, y) = (sX - fX, sY - fY);
             double k = Math.Sqrt(x * x + y * y);
