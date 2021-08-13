@@ -24,6 +24,7 @@ namespace Checkers {
         bool click = false;
         bool needEat = false;
         bool player = true;
+        bool courseNow = false;
         
         int course;
         int position;
@@ -87,30 +88,35 @@ namespace Checkers {
         }
 
         private void pictureBox1_Paint(object sender, PaintEventArgs e) {
-            for (int v = 0; v < 8; v++) {
-                for (int h = 0; h < 4; h++) {
+            for (int v = 0; v < 8; v++)
+            {
+                for (int h = 0; h < 4; h++)
+                {
                     float X = mapCoordinate[(v % 2 == 0 ? h : h + 4), 0] - sizeX / 2;
                     float Y = mapCoordinate[v, 1] - sizeY / 2;
-                    if (checkersMap[h + v * 4] != -1) {
+                    if (checkersMap[h + v * 4] != -1)
+                    {
                         Image checker = checkersForm[checkersMap[h + v * 4]];
                         e.Graphics.DrawImage(checker, X, Y, sizeX, sizeY);
                     }
-                    if (possibleMovesEatMap[h + v * 4, Convert.ToInt32(needEat)] == 1) {
+                    if (possibleMovesEatMap[h + v * 4, Convert.ToInt32(needEat)] == 1)
+                    {
                         Image checker = needEat ? Properties.Resources.red : Properties.Resources.green;
                         e.Graphics.DrawImage(checker, X, Y, sizeX, sizeY);
                     }
                 }
             }
 
-            if (click) {
+            if (click && !courseNow) {
                 ClickOnChecker(e);
                 click = false;
             }
 
-            if (timer1.Enabled) {
-                Image checker = checkersForm[Checker];
-                e.Graphics.DrawImage(checker, (int)(sX - sizeX / 2), (int)(sY - sizeY / 2), sizeX, sizeY);
-            }
+            if (timer1.Enabled)
+                {
+                    Image checker = checkersForm[Checker];
+                    e.Graphics.DrawImage(checker, (int)(sX - sizeX / 2), (int)(sY - sizeY / 2), sizeX, sizeY);
+                }
             if (winer.Length != 0) {
                 System.Drawing.Brush brushWhite = new SolidBrush(System.Drawing.Color.FromArgb(220, 236, 206, 168));
                 System.Drawing.Brush brushOrange = new SolidBrush(System.Drawing.Color.FromArgb(220, 255, 128, 0));
@@ -178,14 +184,18 @@ namespace Checkers {
                     if (mouse.X < possibleMoves[i, j, 0] + sizeX / 2 && mouse.Y < possibleMoves[i, j, 1] + sizeY / 2 &&
                         mouse.X > possibleMoves[i, j, 0] - sizeX / 2 && mouse.Y > possibleMoves[i, j, 1] - sizeY / 2) {
 
+                        courseNow = !courseNow;
+
                         Checker = checkersMap[position];
                         checkersMap[position] = -1;
                         sX = mapCoordinate[position % 8, 0];
                         sY = mapCoordinate[position / 4, 1];
                         fX = mapCoordinate[(int)possibleMoves[i, j, 2] % 8, 0];
                         fY = mapCoordinate[(int)possibleMoves[i, j, 2] / 4, 1];
-                       
-                        soundPlay("move.wav");
+
+                        Thread newThread1 = new Thread(soundPlay);
+                        newThread1.Start("move.wav");
+
                         timer1.Enabled = true;
 
                         while (timer1.Enabled) await Task.Delay(10);
@@ -206,6 +216,7 @@ namespace Checkers {
                             checkMapOnPossibleMoves();
                         }
                         pictureBox1.Invalidate();
+                        courseNow = !courseNow;
                         Array.Clear(possibleMoves, 0, possibleMoves.Length);
                         if (needEat)
                             break;
@@ -429,7 +440,6 @@ namespace Checkers {
             sY -= (float)dy;
 
             if (Math.Abs(x) < 1) {
-                
                 timer1.Enabled = false;
             }
 
